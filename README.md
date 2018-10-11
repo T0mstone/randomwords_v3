@@ -8,7 +8,7 @@ This is comblete but lacks some features
 
 [ ] Help / Tutorial
 
-[ ] <Clear All> button
+[ ] &lt;Clear All&gt; button
 
 [ ] Recursive category definition
 
