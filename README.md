@@ -6,10 +6,12 @@ This is comblete but lacks some features
 # Planned features
 [ ] Support for ? after a Category name (in syllables) which expands to both the pattern with and without that item
 
-[ ] rewrite rules that are applied after everything else
+[ ] Help / Tutorial
 
-[ ] Help / tutorial
+[ ] <Clear All> button
 
 [ ] Recursive category definition
+
+[ ] rewrite rules that are applied after everything else
 
 [ ] Simple UI Mode (no fancy lists, just text fields)
