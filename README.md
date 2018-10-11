@@ -11,3 +11,5 @@ This is comblete but lacks some features
 [ ] Help / tutorial
 
 [ ] Recursive category definition
+
+[ ] Simple UI Mode (no fancy lists, just text fields)
