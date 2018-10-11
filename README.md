@@ -7,3 +7,7 @@ This is comblete but lacks some features
 [ ] Support for ? after a Category name (in syllables) which expands to both the pattern with and without that item
 
 [ ] rewrite rules that are applied after everything else
+
+[ ] Help / tutorial
+
+[ ] Recursive category definition
