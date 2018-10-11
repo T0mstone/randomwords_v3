@@ -1,0 +1,22 @@
+body {
+    background-color: #dd8;
+}
+
+.InputBox {
+    outline: solid 2px black;
+}
+.OutputBox {
+    background-color: #8d7;
+    color: black;
+}
+
+.letter, .syllable_cat {
+    margin-right: 10px;
+}
+
+p {
+    font-size: 1.5em;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-weight: bold;
+}

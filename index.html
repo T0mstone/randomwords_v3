@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Randomwords v3</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script src="gen.js" charset="utf-8"></script>
+    <script src="ui.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        let ui = new UIv3();
+        function format_words(words) {
+            let res = [];
+            for (let i in words) {
+                let word = words[i];
+                res.push("<center>" + word + "</center>");
+            }
+            return res.join("");
+        }
+        function gen_words() {
+            let cats = ui.categories;
+            let syls = ui.syllables;
+            let rw = new RandomwordsV3(cats, syls);
+
+            let a = ui.amount;
+            let scl = ui.syllable_counts_list;
+
+            let words;
+            if (ui.remove_doubles) {
+                words = rw.gen_words_without_doubles(a, scl, ui.timeout);
+            } else {
+                words = rw.gen_words(a, scl);
+            }
+            document.getElementById('out_div').innerHTML = format_words(words);
+        }
+    </script>
+</head>
+
+<body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::C/V;C/V/C::1::50::2/3')">
+    <div width="100%" class="InputBox">
+
+        <p>Categories</p>
+        <div id="categories">
+            <div class="category_def">
+                <input name="cat" type="string" size="3" />
+                =
+                <button onclick="return ui.add_letter_input(this);">+</button>
+                <button onclick="return ui.remove_last_letter_input(this);">-</button>
+            </div>
+            <button onclick="return ui.add_category(this);">+</button>
+            <button onclick="return ui.remove_category(this);">-</button>
+        </div>
+
+        <p>Possible Syllables</p>
+        <div id="syllables">
+            <div class="syllable_def">
+                <input class="syllable_cat" type="string" size="4" />
+                <button onclick="return ui.add_syllable_cat(this);">+</button>
+                <button onclick="return ui.remove_syllable_cat(this);">-</button>
+            </div>
+            <button onclick="return ui.add_syllable(this);">+</button>
+            <button onclick="return ui.remove_syllable(this);">-</button>
+        </div>
+
+        <p>Other</p>
+        <input type="checkbox" id="rem_dbls" /> No words twice<br />
+        Generate <input type="number" id="amount" min="1" step="1" value="1" /> words. <br />
+        Timeout after <input type="number" id="timeout" min="1" step="0.25" value="5" /> seconds.<br />
+        Syllables per word:
+        <div id="sylcount">
+            <input name="first" class="sylcount" type="number" min="1" step="1" value="1" size="4" />
+            <br />
+            <button onclick="return ui.add_sylcount(this);">+</button>
+            <button onclick="return ui.remove_sylcount(this);">-</button>
+        </div>
+        <!--  TODO: custom sylcount list (just like those for categories and syllables) -->
+
+        <br />
+        <button onclick="window.prompt('copy this text', ui.to_string());">Export Settings</button>
+        <button onclick="ui.from_string(window.prompt('enter settings-string', ''));">Import Settings</button>
+        <br /><br />
+        <button onclick="gen_words();">Generate!</button>
+    </div>
+    <div width="100%" class="OutputBox" id="out_div"></div>
+</body>
+
+</html>
