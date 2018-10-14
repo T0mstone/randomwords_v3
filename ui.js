@@ -20,6 +20,55 @@ function filter_list(l, f) {
 class UIv3 {
     constructor() {
         this.prot = def_prototype();
+        this.filters = {
+            letter: (x) => x.tagName == "INPUT" && x.name != "cat",
+            div: (x) => x.tagName == "DIV",
+            syllable_cat: (x) => x.tagName == "INPUT",
+            sylcount: (x) => x.className !== undefined && x.className.includes('sylcount-item') && x.children[0].name !== "first"
+        };
+        this.f_onclick_on_sylcount = (curr) => curr.children[0];
+    }
+
+    enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what) {
+        let par = btn.parentNode;
+        let all = filter_list(par.children, filter_f);
+        if (all.length === 0) {
+            return all;
+        }
+        for (let i in all) {
+            let curr = all[i];
+            if (f_onclick_on_what !== undefined) {
+                curr = f_onclick_on_what(curr);
+            }
+            curr.classList.add(anim_class);
+            curr.onclick = () => {
+                ui.exit_remove_mode(all[i], btn, filter_f, anim_class, f_onclick_on_what);
+            };
+        }
+        btn.onclick = () => { return ui.exit_remove_mode(btn, btn, filter_f, anim_class, f_onclick_on_what); }
+        btn.innerHTML = "x";
+        return all;
+    }
+
+    exit_remove_mode(elt, btn, filter_f, anim_class, f_onclick_on_what) {
+        let par = elt.parentNode;
+        if (elt !== btn) {
+            // Remove it if it's not the button (I don't want to remove the button)
+            par.removeChild(elt);
+        }
+        btn.onclick = () => { return ui.enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what); }
+        btn.innerHTML = "-";
+
+        let all = filter_list(par.children, filter_f);
+        for (let i in all) {
+            let curr = all[i];
+            if (f_onclick_on_what !== undefined) {
+                curr = f_onclick_on_what(curr);
+            }
+            curr.classList.remove(anim_class);
+            curr.onclick = undefined;
+        }
+        return elt;
     }
 
     add_letter_input(btn) {
@@ -30,44 +79,6 @@ class UIv3 {
         input_elt.classList.add('letter');
         div.insertBefore(input_elt, btn);
         return input_elt;
-    }
-
-    remove_last_letter_input(btn) {
-        let div = btn.parentNode;
-        let to_remove = div.children[div.children.length - 3];
-        if (to_remove.name == 'cat') {
-            return
-        }
-        try {
-            div.removeChild(to_remove);
-            return to_remove;
-        } catch {}
-    }
-
-    enter_remove_letter_mode(btn) {
-        let div = btn.parentNode;
-        let all_letters = filter_list(div.children, (x) => x.tagName == "INPUT" && x.name != "cat");
-        for (let i in all_letters) {
-            let letter = all_letters[i];
-            letter.classList.add('blinking');
-            letter.onclick = () => {
-                ui.exit_remove_letter_mode(letter);
-            };
-        }
-        btn.onclick = () => { return ui.exit_remove_letter_mode(btn); }
-    }
-
-    exit_remove_letter_mode(tf, remove_child) {
-        let div = tf.parentNode;
-        if remove_child === true {
-            div.removeChild(tf);
-        }
-        let all_letters = filter_list(div.children, (x) => x.tagName == "INPUT" && x.name != "cat");
-        for (let i in all_letters) {
-            let letter = all_letters[i];
-            letter.classList.remove('blinking');
-            letter.onclick = undefined;
-        }
     }
 
     add_category(btn) {
@@ -84,15 +95,6 @@ class UIv3 {
         return categ_elt;
     }
 
-    remove_category(btn) {
-        let div = btn.parentNode;
-        let to_remove = div.children[div.children.length - 3];
-        try {
-            div.removeChild(to_remove);
-            return to_remove;
-        } catch {}
-    }
-
     add_syllable_cat(btn) {
         let div = btn.parentNode;
         let input_elt = document.createElement('input');
@@ -103,39 +105,23 @@ class UIv3 {
         return input_elt;
     }
 
-    remove_syllable_cat(btn) {
-        let div = btn.parentNode;
-        let to_remove = div.children[div.children.length - 3];
-        try {
-            div.removeChild(to_remove);
-            return to_remove;
-        } catch {}
-    }
-
     add_syllable(btn) {
         let div = btn.parentNode;
         let syl_elt = document.createElement('div');
         syl_elt.classList.add('syllable_def');
 
-        syl_elt.innerHTML = "<input class=\"syllable_cat\" type=\"string\" size=\"4\" /> " +
-            "<button onclick=\"return ui.add_syllable_cat(this);\">+</button> " +
-            "<button onclick=\"return ui.remove_syllable_cat(this);\">-</button>";
+        // syl_elt.innerHTML = "<input class=\"syllable_cat\" type=\"string\" size=\"4\" /> " +
+        //     "<button onclick=\"return ui.add_syllable_cat(this);\">+</button> " +
+        //     "<button onclick=\"return ui.remove_syllable_cat(this);\">-</button>";
+        syl_elt.innerHTML = this.prot.syllable();
 
         div.insertBefore(syl_elt, btn);
         return syl_elt;
     }
 
-    remove_syllable(btn) {
-        let div = btn.parentNode;
-        let to_remove = div.children[div.children.length - 3];
-        try {
-            div.removeChild(to_remove);
-            return to_remove;
-        } catch {}
-    }
-
     add_sylcount(btn) {
         let div = btn.parentNode;
+
         let sylcount_elt = document.createElement('input');
         sylcount_elt.type = "number";
         sylcount_elt.size = "4";
@@ -143,14 +129,24 @@ class UIv3 {
         sylcount_elt.min = "1";
         sylcount_elt.step = "1";
         sylcount_elt.value = "1";
+
         let br = document.createElement('br');
         let txt = document.createTextNode('or ');
-        let first = div.childNodes.length === 4;
-        if (!first) {
-            div.insertBefore(txt, btn);
+
+        let parent_div = document.createElement('div');
+        parent_div.classList.add('sylcount-item');
+
+        let is_first = div.childNodes.length === 4;
+
+        if (is_first) {
+            sylcount_elt.name = "first";
+        } else {
+            parent_div.appendChild(txt);
         }
-        div.insertBefore(sylcount_elt, btn);
-        div.insertBefore(br, btn);
+        parent_div.appendChild(sylcount_elt);
+        parent_div.appendChild(br);
+
+        div.insertBefore(parent_div, btn);
         return sylcount_elt;
     }
 
