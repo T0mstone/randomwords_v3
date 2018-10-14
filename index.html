@@ -38,18 +38,25 @@
 </head>
 
 <body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::C/V;C/V/C::1::50::2/3')">
+    <div id="category_def_prototype" style="display: none;">
+        <input name="cat" type="string" size="3" />
+        =
+        <input class="letter" type="string" size="2" />
+        <button onclick="return ui.add_letter_input(this);">+</button>
+        <button onclick="return ui.enter_remove_letter_mode(this);">-</button>
+    </div>
+    <div id="syllable_def_prototype" style="display: none;">
+        <input class="syllable_cat" type="string" size="4" />
+        <button onclick="return ui.add_syllable_cat(this);">+</button>
+        <button onclick="return ui.remove_syllable_cat(this);">-</button>
+    </div>
     <br />
     <a href="https://github.com/T0mstone/randomwords_v3">Visit me on GitHub</a>
     <br /><br />
     <div width="100%" class="InputBox">
         <p>Categories</p>
         <div id="categories">
-            <div class="category_def">
-                <input name="cat" type="string" size="3" />
-                =
-                <button onclick="return ui.add_letter_input(this);">+</button>
-                <button onclick="return ui.remove_last_letter_input(this);">-</button>
-            </div>
+            <div class="category_def"></div>
             <button onclick="return ui.add_category(this);">+</button>
             <button onclick="return ui.remove_category(this);">-</button>
         </div>

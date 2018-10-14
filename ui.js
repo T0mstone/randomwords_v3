@@ -1,4 +1,27 @@
+function def_prototype() {
+    return {
+        category() { return document.getElementById('category_def_prototype').innerHTML},
+        syllable() { return  document.getElementById('syllable_def_prototype').innerHTML}
+    };
+}
+
+
+function filter_list(l, f) {
+    let res = [];
+    for (let i in l) {
+        if (f(l[i])) {
+            res.push(l[i]);
+        }
+    }
+    return res;
+}
+
+
 class UIv3 {
+    constructor() {
+        this.prot = def_prototype();
+    }
+
     add_letter_input(btn) {
         let div = btn.parentNode;
         let input_elt = document.createElement('input');
@@ -21,14 +44,41 @@ class UIv3 {
         } catch {}
     }
 
+    enter_remove_letter_mode(btn) {
+        let div = btn.parentNode;
+        let all_letters = filter_list(div.children, (x) => x.tagName == "INPUT" && x.name != "cat");
+        for (let i in all_letters) {
+            let letter = all_letters[i];
+            letter.classList.add('blinking');
+            letter.onclick = () => {
+                ui.exit_remove_letter_mode(letter);
+            };
+        }
+        btn.onclick = () => { return ui.exit_remove_letter_mode(btn); }
+    }
+
+    exit_remove_letter_mode(tf, remove_child) {
+        let div = tf.parentNode;
+        if remove_child === true {
+            div.removeChild(tf);
+        }
+        let all_letters = filter_list(div.children, (x) => x.tagName == "INPUT" && x.name != "cat");
+        for (let i in all_letters) {
+            let letter = all_letters[i];
+            letter.classList.remove('blinking');
+            letter.onclick = undefined;
+        }
+    }
+
     add_category(btn) {
         let div = btn.parentNode;
         let categ_elt = document.createElement('div');
         categ_elt.classList.add('category_def');
 
-        categ_elt.innerHTML = "<input name=\"cat\" type=\"string\" size=\"3\" /> = " +
-            "<button onclick=\"return ui.add_letter_input(this);\">+</button>" +
-            "<button onclick=\"return ui.remove_last_letter_input(this);\">-</button>";
+        // categ_elt.innerHTML = "<input name=\"cat\" type=\"string\" size=\"3\" /> = " +
+        //     "<button onclick=\"return ui.add_letter_input(this);\">+</button>" +
+        //     "<button onclick=\"return ui.remove_last_letter_input(this);\">-</button>";
+        categ_elt.innerHTML = this.prot.category();
 
         div.insertBefore(categ_elt, btn);
         return categ_elt;
