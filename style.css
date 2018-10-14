@@ -11,7 +11,13 @@ body {
 }
 
 .letter, .syllable_cat {
+    border: 1px solid gray;
+    padding: 3px;
     margin-right: 10px;
+}
+
+.syllable_def, .category_def {
+    margin-bottom: 3px;
 }
 
 p {
@@ -19,4 +25,52 @@ p {
     margin-top: 20px;
     margin-bottom: 0px;
     font-weight: bold;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes red_blinking {
+    0%   {background-color:white;}
+    50%  {background-color:red;}
+    100% {background-color:white;}
+}
+
+/* Standard syntax */
+@keyframes red_blinking {
+    0%   {background-color:white;}
+    50%  {background-color:red;}
+    100% {background-color:white;}
+}
+
+.blinking {
+    background-color: white;
+    -webkit-animation-name: red_blinking; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1.5s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: infinite;
+    animation-name: red_blinking;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes a_blinking {
+    0%   {background-color:rgba(255, 255, 255, 0);}
+    50%  {background-color:red;}
+    100% {background-color:rgba(255, 255, 255, 0);}
+}
+
+/* Standard syntax */
+@keyframes a_blinking {
+    0%   {background-color:rgba(255, 255, 255, 0);}
+    50%  {background-color:red;}
+    100% {background-color:rgba(255, 255, 255, 0);}
+}
+
+.a_blinking {
+    background-color: white;
+    -webkit-animation-name: a_blinking; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1.5s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-iteration-count: infinite;
+    animation-name: a_blinking;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
 }
