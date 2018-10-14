@@ -16,8 +16,7 @@ function filter_list(l, f) {
     return res;
 }
 
-function question_mark_resolver() {
-    return {
+class QuestionMarkResolver {
         resolve_first_question_mark(str_list) {
             let first_qmark_i = null;
             for (let i in str_list) {
@@ -57,7 +56,6 @@ function question_mark_resolver() {
             }
             return {true: have_optionals, false: dont_have_optionals}
         }
-    };
 }
 
 
