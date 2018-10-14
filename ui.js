@@ -16,26 +16,62 @@ function filter_list(l, f) {
     return res;
 }
 
+function list_eq(l1, l2) {
+    if (l1.length != l2.length) {
+        return false;
+    }
+    for (let i in l1) {
+        let a = l1[i];
+        let b = l2[i];
+        if (a !== b) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function list_includes_list(l1, l2) {
+    for (let i in l1) {
+        let e = l1[i];
+        if (typeof e !== "object") {
+            continue;
+        }
+        if (list_eq(e, l2)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function remove_double_lists_in_list(l) {
+    let res = [];
+    for (let i in l) {
+        let e = l[i];
+        if (!list_includes_list(res, e)) {
+            res.push(e);
+        }
+    }
+    return res;
+}
+
 class QuestionMarkResolver {
         resolve_first_question_mark(str_list) {
-            let first_qmark_i = null;
+            let a = [];
+            let b = [];
             for (let i in str_list) {
+                i = parseInt(i);
                 let s = str_list[i];
-                if (s.endsWith('?') && first_qmark_i === null) {
-                    first_qmark_i = i;
+                if (s.endsWith('?')) {
+                    let pre = str_list.slice(0, i);
+                    let end = str_list.slice(i + 1);
+                    // remove the ?
+                    let item = s.substring(0, s.length - 1);
+                    a = pre.concat(item, end);
+                    b = pre.concat(end);
+                    return [a, b];
                 }
             }
-            if (first_qmark_i === null) {
-                return [str_list]
-            }
-            let before = str_list.slice(0, first_qmark_i);
-            let after = str_list.slice(first_qmark_i + 1);
-            let optional = str_list[first_qmark_i];
-            // remove the ? at the end
-            let s = optional.substring(0, optional.length - 1);
-            let a = before.concat([s].concat(after));
-            let b = before.concat(after);
-            return [a, b];
+            return [str_list];
         }
 
         list_has_optionals(str_list) {
@@ -43,18 +79,34 @@ class QuestionMarkResolver {
             return r.length == 2;
         }
 
-        pop_non_optionals(str_list_list) {
-            let have_optionals = [];
-            let dont_have_optionals = [];
+        resolve_every_question_mark(str_list) {
+            let res = [str_list];
+            let has_optionals = true;
+            let stop = 0;
+            while (has_optionals) {
+                let new_res = [];
+                has_optionals = false;
+                for (let i in res) {
+                    let list = res[i];
+                    let temp = this.resolve_first_question_mark(list);
+                    new_res.push(temp[0]);
+                    if (temp.length == 2) {
+                        new_res.push(temp[1]);
+                        has_optionals = true;
+                    }
+                }
+                res = new_res;
+            }
+            return remove_double_lists_in_list(res);
+        }
+
+        resolve_every_question_mark_multiple(str_list_list) {
+            let res = [];
             for (let i in str_list_list) {
                 let str_list = str_list_list[i];
-                if (this.list_has_optionals(str_list)) {
-                    have_optionals.push(str_list);
-                } else {
-                    dont_have_optionals.push(str_list);
-                }
+                res = res.concat(this.resolve_every_question_mark(str_list));
             }
-            return {true: have_optionals, false: dont_have_optionals}
+            return remove_double_lists_in_list(res);
         }
 }
 
@@ -69,6 +121,7 @@ class UIv3 {
             sylcount: (x) => x.className !== undefined && x.className.includes('sylcount-item') && x.children[0].name !== "first"
         };
         this.f_onclick_on_sylcount = (curr) => curr.children[0];
+        this.qm = new QuestionMarkResolver();
     }
 
     enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what) {
