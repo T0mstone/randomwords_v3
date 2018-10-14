@@ -174,6 +174,18 @@ class UIv3 {
         return elt;
     }
 
+    remove_last(btn, filter_f) {
+        let par = btn.parentNode;
+        let all = filter_list(par.children, filter_f);
+        let last = all[all.length - 1];
+
+        if (all.length != 0) {
+            par.removeChild(last);
+        }
+
+        return last;
+    }
+
     add_letter_input(btn) {
         let div = btn.parentNode;
         let input_elt = document.createElement('input');
@@ -233,7 +245,7 @@ class UIv3 {
         let parent_div = document.createElement('div');
         parent_div.classList.add('sylcount-item');
 
-        let is_first = div.childNodes.length === 4;
+        let is_first = document.getElementsByClassName('sylcount-item').length == 0;
 
         if (is_first) {
             sylcount_elt.name = "first";
@@ -263,8 +275,8 @@ class UIv3 {
 
     clear_sylcounts() {
         let sc = document.getElementById('sylcount');
-        while (sc.childNodes.length !== 4) {
-            sc.removeChild(sc.childNodes[sc.childNodes.length - 5]);
+        while (document.getElementsByClassName('sylcount-item').length > 1) {
+            sc.removeChild(sc.children[1]);
         }
     }
 
