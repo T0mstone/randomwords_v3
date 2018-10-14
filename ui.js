@@ -1,7 +1,11 @@
 function def_prototype() {
     return {
-        category() { return document.getElementById('category_def_prototype').innerHTML},
-        syllable() { return  document.getElementById('syllable_def_prototype').innerHTML}
+        category() {
+            return document.getElementById('category_def_prototype').innerHTML
+        },
+        syllable() {
+            return document.getElementById('syllable_def_prototype').innerHTML
+        }
     };
 }
 
@@ -16,46 +20,98 @@ function filter_list(l, f) {
     return res;
 }
 
+function list_eq(l1, l2) {
+    if (l1.length != l2.length) {
+        return false;
+    }
+    for (let i in l1) {
+        let a = l1[i];
+        let b = l2[i];
+        if (a !== b) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function list_includes_list(l1, l2) {
+    for (let i in l1) {
+        let e = l1[i];
+        if (typeof e !== "object") {
+            continue;
+        }
+        if (list_eq(e, l2)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function remove_double_lists_in_list(l) {
+    let res = [];
+    for (let i in l) {
+        let e = l[i];
+        if (!list_includes_list(res, e)) {
+            res.push(e);
+        }
+    }
+    return res;
+}
+
 class QuestionMarkResolver {
-        resolve_first_question_mark(str_list) {
-            let first_qmark_i = null;
-            for (let i in str_list) {
-                let s = str_list[i];
-                if (s.endsWith('?') && first_qmark_i === null) {
-                    first_qmark_i = i;
+    resolve_first_question_mark(str_list) {
+        let a = [];
+        let b = [];
+        for (let i in str_list) {
+            i = parseInt(i);
+            let s = str_list[i];
+            if (s.endsWith('?')) {
+                let pre = str_list.slice(0, i);
+                let end = str_list.slice(i + 1);
+                // remove the ?
+                let item = s.substring(0, s.length - 1);
+                a = pre.concat(item, end);
+                b = pre.concat(end);
+                return [a, b];
+            }
+        }
+        return [str_list];
+    }
+
+    list_has_optionals(str_list) {
+        let r = this.resolve_first_question_mark(str_list);
+        return r.length == 2;
+    }
+
+    resolve_every_question_mark(str_list) {
+        let res = [str_list];
+        let has_optionals = true;
+        let stop = 0;
+        while (has_optionals) {
+            let new_res = [];
+            has_optionals = false;
+            for (let i in res) {
+                let list = res[i];
+                let temp = this.resolve_first_question_mark(list);
+                new_res.push(temp[0]);
+                if (temp.length == 2) {
+                    new_res.push(temp[1]);
+                    has_optionals = true;
                 }
             }
-            if (first_qmark_i === null) {
-                return [str_list]
-            }
-            let before = str_list.slice(0, first_qmark_i);
-            let after = str_list.slice(first_qmark_i + 1);
-            let optional = str_list[first_qmark_i];
-            // remove the ? at the end
-            let s = optional.substring(0, optional.length - 1);
-            let a = before.concat([s].concat(after));
-            let b = before.concat(after);
-            return [a, b];
+            res = new_res;
         }
+        return remove_double_lists_in_list(res);
+    }
 
-        list_has_optionals(str_list) {
-            let r = this.resolve_first_question_mark(str_list);
-            return r.length == 2;
+    resolve_every_question_mark_multiple(str_list_list) {
+        let res = [];
+        for (let i in str_list_list) {
+            let str_list = str_list_list[i];
+            res = res.concat(this.resolve_every_question_mark(str_list));
         }
-
-        pop_non_optionals(str_list_list) {
-            let have_optionals = [];
-            let dont_have_optionals = [];
-            for (let i in str_list_list) {
-                let str_list = str_list_list[i];
-                if (this.list_has_optionals(str_list)) {
-                    have_optionals.push(str_list);
-                } else {
-                    dont_have_optionals.push(str_list);
-                }
-            }
-            return {true: have_optionals, false: dont_have_optionals}
-        }
+        return remove_double_lists_in_list(res);
+    }
 }
 
 
@@ -69,6 +125,7 @@ class UIv3 {
             sylcount: (x) => x.className !== undefined && x.className.includes('sylcount-item') && x.children[0].name !== "first"
         };
         this.f_onclick_on_sylcount = (curr) => curr.children[0];
+        this.qm = new QuestionMarkResolver();
     }
 
     enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what) {
@@ -87,7 +144,9 @@ class UIv3 {
                 ui.exit_remove_mode(all[i], btn, filter_f, anim_class, f_onclick_on_what);
             };
         }
-        btn.onclick = () => { return ui.exit_remove_mode(btn, btn, filter_f, anim_class, f_onclick_on_what); }
+        btn.onclick = () => {
+            return ui.exit_remove_mode(btn, btn, filter_f, anim_class, f_onclick_on_what);
+        }
         btn.innerHTML = "x";
         return all;
     }
@@ -98,7 +157,9 @@ class UIv3 {
             // Remove it if it's not the button (I don't want to remove the button)
             par.removeChild(elt);
         }
-        btn.onclick = () => { return ui.enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what); }
+        btn.onclick = () => {
+            return ui.enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what);
+        }
         btn.innerHTML = "-";
 
         let all = filter_list(par.children, filter_f);
@@ -301,19 +362,8 @@ class UIv3 {
             syls.push(temp_cats);
             temp_cats = [];
         }
-        // // Question Mark resolving
-        // let res = [];
-        // for (let i in syls) {
-        //     let syl = syls[i];
-        //     let new_syls = [syl];
-        //     let has_optionals = true;
-        //     while(has_optionals) {
-        //         has_optionals = false;
-        //         let r = this.pop_non_optionals(new_syls);
-        //         // TODO: implement
-        //     }
-        // }
-        return syls;
+        console.log(syls);
+        return this.qm.resolve_every_question_mark_multiple(syls);
     }
 
     set syllables(syls_list) {
@@ -343,10 +393,11 @@ class UIv3 {
         let syl_counts = [];
         for (let i in sc.children) {
             let child = sc.children[i];
-            if (child.tagName !== "INPUT") {
+            if (child.tagName !== "DIV") {
                 continue;
             }
-            let val = child.value;
+            let elt = child.children[0];
+            let val = elt.value;
             if (!syl_counts.includes(val)) {
                 syl_counts.push(val);
             }
@@ -452,7 +503,9 @@ class UIv3 {
             let categ_temp = categ_s.split('=');
             let categ_name = this.custom_unescape(categ_temp[0]);
             let categ_items = categ_temp[1].split('/');
-            categ_items.forEach((elt, i, arr) => {arr[i] = this.custom_unescape(elt)});
+            categ_items.forEach((elt, i, arr) => {
+                arr[i] = this.custom_unescape(elt)
+            });
             categs[categ_name] = categ_items;
         }
         this.categories = categs;
@@ -462,7 +515,9 @@ class UIv3 {
         for (let i in syl_strs) {
             let syl_s = syl_strs[i];
             let syl_items = syl_s.split('/');
-            syl_items.forEach((elt, i, arr) => {arr[i] = this.custom_unescape(elt)});
+            syl_items.forEach((elt, i, arr) => {
+                arr[i] = this.custom_unescape(elt)
+            });
             syls.push(syl_items);
         }
         this.syllables = syls;
