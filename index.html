@@ -39,6 +39,14 @@
             console.log(words);
             document.getElementById('out_div').innerHTML = format_words(words);
         }
+
+        function confirm_dialog(msg, true_str) {
+            if (true_str === undefined) {
+                true_str = "yes";
+            }
+            let s = window.prompt(msg, "");
+            return s === true_str;
+        }
     </script>
 </head>
 
@@ -88,6 +96,8 @@
         </div>
 
         <br />
+        <button onclick="if (confirm_dialog('are you sure you want to clear all settings (type yes)')) { ui.clear_all(); }" style="background-color: red">Clear All</button>
+        <br /><br />
         <button onclick="window.prompt('copy this text', ui.to_string());">Export Settings</button>
         <button onclick="ui.from_string(window.prompt('enter settings-string', ''));">Import Settings</button>
         <br /><br />
