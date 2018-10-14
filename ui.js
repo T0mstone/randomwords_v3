@@ -354,19 +354,8 @@ class UIv3 {
             syls.push(temp_cats);
             temp_cats = [];
         }
-        // // Question Mark resolving
-        // let res = [];
-        // for (let i in syls) {
-        //     let syl = syls[i];
-        //     let new_syls = [syl];
-        //     let has_optionals = true;
-        //     while(has_optionals) {
-        //         has_optionals = false;
-        //         let r = this.pop_non_optionals(new_syls);
-        //         // TODO: implement
-        //     }
-        // }
-        return syls;
+        console.log(syls);
+        return this.qm.resolve_every_question_mark_multiple(syls);
     }
 
     set syllables(syls_list) {
@@ -396,10 +385,11 @@ class UIv3 {
         let syl_counts = [];
         for (let i in sc.children) {
             let child = sc.children[i];
-            if (child.tagName !== "INPUT") {
+            if (child.tagName !== "DIV") {
                 continue;
             }
-            let val = child.value;
+            let elt = child.children[0];
+            let val = elt.value;
             if (!syl_counts.includes(val)) {
                 syl_counts.push(val);
             }

@@ -23,6 +23,8 @@
             let syls = ui.syllables;
             let rw = new RandomwordsV3(cats, syls);
 
+            console.log(syls, rw.maximum_possible_different_syllables());
+
             let a = ui.amount;
             let scl = ui.syllable_counts_list;
 
@@ -32,6 +34,7 @@
             } else {
                 words = rw.gen_words(a, scl);
             }
+            console.log(words);
             document.getElementById('out_div').innerHTML = format_words(words);
         }
     </script>
