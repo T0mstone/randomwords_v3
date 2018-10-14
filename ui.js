@@ -16,6 +16,50 @@ function filter_list(l, f) {
     return res;
 }
 
+function question_mark_resolver() {
+    return {
+        resolve_first_question_mark(str_list) {
+            let first_qmark_i = null;
+            for (let i in str_list) {
+                let s = str_list[i];
+                if (s.endsWith('?') && first_qmark_i === null) {
+                    first_qmark_i = i;
+                }
+            }
+            if (first_qmark_i === null) {
+                return [str_list]
+            }
+            let before = str_list.slice(0, first_qmark_i);
+            let after = str_list.slice(first_qmark_i + 1);
+            let optional = str_list[first_qmark_i];
+            // remove the ? at the end
+            let s = optional.substring(0, optional.length - 1);
+            let a = before.concat([s].concat(after));
+            let b = before.concat(after);
+            return [a, b];
+        }
+
+        list_has_optionals(str_list) {
+            let r = this.resolve_first_question_mark(str_list);
+            return r.length == 2;
+        }
+
+        pop_non_optionals(str_list_list) {
+            let have_optionals = [];
+            let dont_have_optionals = [];
+            for (let i in str_list_list) {
+                let str_list = str_list_list[i];
+                if (this.list_has_optionals(str_list)) {
+                    have_optionals.push(str_list);
+                } else {
+                    dont_have_optionals.push(str_list);
+                }
+            }
+            return {true: have_optionals, false: dont_have_optionals}
+        }
+    };
+}
+
 
 class UIv3 {
     constructor() {
@@ -86,9 +130,6 @@ class UIv3 {
         let categ_elt = document.createElement('div');
         categ_elt.classList.add('category_def');
 
-        // categ_elt.innerHTML = "<input name=\"cat\" type=\"string\" size=\"3\" /> = " +
-        //     "<button onclick=\"return ui.add_letter_input(this);\">+</button>" +
-        //     "<button onclick=\"return ui.remove_last_letter_input(this);\">-</button>";
         categ_elt.innerHTML = this.prot.category();
 
         div.insertBefore(categ_elt, btn);
@@ -110,9 +151,6 @@ class UIv3 {
         let syl_elt = document.createElement('div');
         syl_elt.classList.add('syllable_def');
 
-        // syl_elt.innerHTML = "<input class=\"syllable_cat\" type=\"string\" size=\"4\" /> " +
-        //     "<button onclick=\"return ui.add_syllable_cat(this);\">+</button> " +
-        //     "<button onclick=\"return ui.remove_syllable_cat(this);\">-</button>";
         syl_elt.innerHTML = this.prot.syllable();
 
         div.insertBefore(syl_elt, btn);
@@ -150,26 +188,6 @@ class UIv3 {
         return sylcount_elt;
     }
 
-    remove_sylcount(btn) {
-        let div = btn.parentNode;
-        let br_to_remove = div.children[div.children.length - 3];
-        let item_to_remove = div.children[div.children.length - 4];
-        if (item_to_remove.name == 'first') {
-            return
-        }
-        try {
-            div.removeChild(br_to_remove);
-        } catch {}
-        try {
-            let txt_to_remove = div.childNodes[div.childNodes.length - 5];
-            div.removeChild(txt_to_remove);
-        } catch {}
-        try {
-            div.removeChild(item_to_remove);
-            return item_to_remove;
-        } catch {}
-    }
-
     clear_categories() {
         let c = document.getElementById('categories');
         while (document.getElementsByClassName('category_def').length !== 0) {
@@ -189,7 +207,6 @@ class UIv3 {
         while (sc.childNodes.length !== 4) {
             sc.removeChild(sc.childNodes[sc.childNodes.length - 5]);
         }
-
     }
 
     clear_all() {
@@ -263,46 +280,6 @@ class UIv3 {
                 letter_field.value = letter;
             }
         }
-    }
-
-    resolve_first_question_mark(str_list) {
-        let first_qmark_i = null;
-        for (let i in str_list) {
-            let s = str_list[i];
-            if (s.endsWith('?') && first_qmark_i === null) {
-                first_qmark_i = i;
-            }
-        }
-        if (first_qmark_i === null) {
-            return [str_list]
-        }
-        let before = str_list.slice(0, first_qmark_i);
-        let after = str_list.slice(first_qmark_i + 1);
-        let optional = str_list[first_qmark_i];
-        // remove the ? at the end
-        let s = optional.substring(0, optional.length - 1);
-        let a = before.concat([s].concat(after));
-        let b = before.concat(after);
-        return [a, b];
-    }
-
-    list_has_optionals(str_list) {
-        let r = this.resolve_first_question_mark(str_list);
-        return r.length == 2;
-    }
-
-    pop_non_optionals(str_list_list) {
-        let have_optionals = [];
-        let dont_have_optionals = [];
-        for (let i in str_list_list) {
-            let str_list = str_list_list[i];
-            if (this.list_has_optionals(str_list)) {
-                have_optionals.push(str_list);
-            } else {
-                dont_have_optionals.push(str_list);
-            }
-        }
-        return {true: have_optionals, false: dont_have_optionals}
     }
 
     get syllables() {
