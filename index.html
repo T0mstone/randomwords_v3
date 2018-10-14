@@ -48,11 +48,13 @@
         =
         <button onclick="return ui.add_letter_input(this);">+</button>
         <button onclick="return ui.enter_remove_mode(this, ui.filters.letter, 'blinking');">-</button>
+        <button onclick="return ui.remove_last(this, ui.filters.letter);">&lt;-</button>
     </div>
     <div id="syllable_def_prototype" style="display: none;">
         <input class="syllable_cat" type="string" size="4" />
         <button onclick="return ui.add_syllable_cat(this);">+</button>
         <button onclick="return ui.enter_remove_mode(this, ui.filters.syllable_cat, 'blinking');">-</button>
+        <button onclick="return ui.remove_last(this, ui.filters.syllable_cat);">&lt;-</button>
     </div>
     <br />
     <a href="https://github.com/T0mstone/randomwords_v3">Visit me on GitHub</a>
@@ -63,6 +65,7 @@
             <div class="category_def"></div>
             <button onclick="return ui.add_category(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.div, 'a_blinking');">-</button>
+            <button onclick="return ui.remove_last(this, ui.filters.div);">^</button>
         </div>
 
         <p>Possible Syllables</p>
@@ -70,6 +73,7 @@
             <div class="syllable_def"></div>
             <button onclick="return ui.add_syllable(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.div, 'a_blinking');">-</button>
+            <button onclick="return ui.remove_last(this, ui.filters.div);">^</button>
         </div>
 
         <p>Other</p>
@@ -78,9 +82,9 @@
         Timeout after <input type="number" id="timeout" min="1" step="0.25" value="5" /> seconds.<br />
         Syllables per word:
         <div id="sylcount">
-            <br />
             <button onclick="return ui.add_sylcount(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.sylcount, 'blinking', ui.f_onclick_on_sylcount);">-</button>
+            <button onclick="return ui.remove_last(this, ui.filters.sylcount);">^</button>
         </div>
 
         <br />
