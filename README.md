@@ -1,5 +1,5 @@
 # randomwords_v3
-Word generator for any conlang
+generates words from patterns
 
 This is comblete but lacks some features
 
