@@ -10,6 +10,7 @@
     <script src="ui.js" charset="utf-8"></script>
     <script type="text/javascript">
         let ui = new UIv3();
+
         function format_words(words) {
             let res = [];
             for (let i in words) {
@@ -18,6 +19,7 @@
             }
             return res.join("");
         }
+
         function gen_words() {
             let cats = ui.categories;
             let syls = ui.syllables;
