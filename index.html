@@ -27,7 +27,7 @@
             let cats = ui.categories;
             let syls = ui.syllables;
             syls = qm.resolve_every_question_mark_multiple(syls);
-            let rw = new RandomwordsV3(cats, syls, ui.recursion_limit);
+            let rw = new RandomwordsV3(cats, syls, ui.recursion_limit, ui.will_gen_all);
 
             console.log(syls, rw.maximum_possible_different_syllables());
 
@@ -92,6 +92,7 @@
 
         <p>Other</p>
         <input type="checkbox" id="rem_dbls" /> No words twice<br />
+        <input type="checkbox" id="will_gen_all" /> GenAll<sup>*</sup><br />
         Generate <input type="number" id="amount" min="1" step="1" value="1" /> words. <br />
         Timeout after <input type="number" id="timeout" min="1" step="0.25" value="5" /> seconds.<br />
         Syllables per word:

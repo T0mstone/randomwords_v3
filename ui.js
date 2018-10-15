@@ -414,6 +414,15 @@ class UIv3 {
         document.getElementById('recursion_limit').value = v;
     }
 
+    get will_gen_all() {
+        // The + converts it to an int
+        return +document.getElementById('will_gen_all').checked;
+    }
+
+    set will_gen_all(v) {
+        document.getElementById('will_gen_all').checked = v;
+    }
+
     to_string() {
         let ct = document.getElementById('categories');
         let sl = document.getElementById('syllables');

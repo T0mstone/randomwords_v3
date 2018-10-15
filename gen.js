@@ -33,10 +33,11 @@ class Helper {
 }
 
 class RandomwordsV3 {
-    constructor(categories, syllables, recursion_limit) {
+    constructor(categories, syllables, recursion_limit, will_gen_all) {
         this.categories = categories;
         this.syllables = syllables;
         this.categ_recursion_limit = recursion_limit;
+        this.will_gen_all = will_gen_all;
 
         this.categories = this.resolve_categories();
     }
@@ -217,7 +218,7 @@ class RandomwordsV3 {
     gen_words_without_doubles(amount, syllable_counts_list, timeout_secs) {
         console.log("generating", amount, "words (without doubles)...");
         let max_amount = this.maximum_possible_words(syllable_counts_list);
-        if (amount >= max_amount) {
+        if (amount >= max_amount && this.will_gen_all) {
             console.log("amount (" + amount + ") equals or exceeds the maximum possible words (" + max_amount + "), generating all possible words...");
             return this.gen_all_words(syllable_counts_list);
         }
