@@ -236,8 +236,9 @@ class UIv3 {
         this.clear_syllables();
         this.clear_sylcounts();
 
-        document.getElementById('rem_dbls').checked = false;
-        document.getElementById('amount').value = 1;
+        this.remove_doubles = false;
+        this.amount = 1;
+        this.recursion_limit = 0;
     }
 
     custom_escape(s) {
