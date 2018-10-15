@@ -1,4 +1,4 @@
-function def_prototype() {
+function uiv4_prototypes() {
     return {
         category() {
             return document.getElementById('category_def_prototype').innerHTML
@@ -80,7 +80,7 @@ class QuestionMarkResolver {
 
 class UIv3 {
     constructor() {
-        this.prot = def_prototype();
+        this.prot = uiv4_prototypes();
         this.filters = {
             letter: (x) => x.tagName == "INPUT" && x.name != "cat",
             div: (x) => x.tagName == "DIV",
