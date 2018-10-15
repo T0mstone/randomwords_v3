@@ -22,8 +22,11 @@
         }
 
         function gen_words() {
+            let qm = new QuestionMarkResolver();
+
             let cats = ui.categories;
             let syls = ui.syllables;
+            syls = qm.resolve_every_question_mark_multiple(syls);
             let rw = new RandomwordsV3(cats, syls, ui.recursion_limit);
 
             console.log(syls, rw.maximum_possible_different_syllables());
@@ -51,7 +54,7 @@
     </script>
 </head>
 
-<body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::V/V/C;C/V/C?::1::50::2/3')">
+<body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::10::V/V/C;C/V/C?::1::50::5::2/3')">
     <div id="category_def_prototype" style="display: none;">
         <input name="cat" type="string" size="3" />
         =
@@ -93,6 +96,10 @@
         Timeout after <input type="number" id="timeout" min="1" step="0.25" value="5" /> seconds.<br />
         Syllables per word:
         <div id="sylcount">
+            <div class="sylcount-item">
+                <input size="4" class="sylcount" min="1" step="1" name="first" type="number">
+                <br />
+            </div>
             <button onclick="return ui.add_sylcount(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.sylcount, 'blinking', ui.f_onclick_on_sylcount);">-</button>
             <button onclick="return ui.remove_last(this, ui.filters.sylcount);">^</button>

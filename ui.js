@@ -76,7 +76,6 @@ class UIv3 {
             sylcount: (x) => x.className !== undefined && x.className.includes('sylcount-item') && x.children[0].name !== "first"
         };
         this.f_onclick_on_sylcount = (curr) => curr.children[0];
-        this.qm = new QuestionMarkResolver();
     }
 
     enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what) {
@@ -326,8 +325,7 @@ class UIv3 {
             syls.push(temp_cats);
             temp_cats = [];
         }
-        console.log(syls);
-        return this.qm.resolve_every_question_mark_multiple(syls);
+        return syls;
     }
 
     set syllables(syls_list) {
@@ -372,7 +370,10 @@ class UIv3 {
     set syllable_counts_list(sylcounts_list) {
         this.clear_sylcounts();
         let sc = document.getElementById('sylcount');
-        let add_button = sc.children[0];
+        let add_button = sc.children[1];
+        let first_input = sc.children[0].children[0];
+        first_input.value = sylcounts_list[0];
+        sylcounts_list = sylcounts_list.slice(1);
         for (let i in sylcounts_list) {
             let sylcount = sylcounts_list[i];
             let sylcount_field = add_button.onclick();
@@ -420,6 +421,8 @@ class UIv3 {
 
         let remove_doubles = this.remove_doubles;
         let amount = this.amount;
+        let tmo = this.timeout;
+        let rec_l = this.recursion_limit;
 
 
         let categs = this.categories;
@@ -453,20 +456,24 @@ class UIv3 {
         let syl_count_str = this.syllable_counts_list.join('/');
 
 
-        let res_list = [categ_str, syl_str, remove_doubles, amount, syl_count_str];
+        let res_list = [categ_str, rec_l, syl_str, remove_doubles, amount, tmo, syl_count_str];
         return res_list.join('::');
     }
 
     from_string(s) {
         let vals_temp = s.split('::');
         let categ_str = vals_temp[0];
-        let syl_str = vals_temp[1];
-        let remove_doubles = parseInt(vals_temp[2]);
-        let amount = parseInt(vals_temp[3]);
-        let syl_count_str = vals_temp[4];
+        let rec_l = parseInt(vals_temp[1]);
+        let syl_str = vals_temp[2];
+        let remove_doubles = parseInt(vals_temp[3]);
+        let amount = parseInt(vals_temp[4]);
+        let tmo = parseInt(vals_temp[5]);
+        let syl_count_str = vals_temp[6];
 
         this.remove_doubles = remove_doubles;
         this.amount = amount;
+        this.recursion_limit = rec_l;
+        this.timeout = tmo;
 
         let categs = {};
         let categ_strs = categ_str.split(';');
