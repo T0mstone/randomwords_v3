@@ -6,6 +6,7 @@
     <title>Randomwords v3</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 
+    <script src="tools.js" charset="utf-8"></script>
     <script src="gen.js" charset="utf-8"></script>
     <script src="ui.js" charset="utf-8"></script>
     <script type="text/javascript">
@@ -23,7 +24,7 @@
         function gen_words() {
             let cats = ui.categories;
             let syls = ui.syllables;
-            let rw = new RandomwordsV3(cats, syls);
+            let rw = new RandomwordsV3(cats, syls, ui.recursion_limit);
 
             console.log(syls, rw.maximum_possible_different_syllables());
 
@@ -74,6 +75,8 @@
             <button onclick="return ui.add_category(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.div, 'a_blinking');">-</button>
             <button onclick="return ui.remove_last(this, ui.filters.div);">^</button>
+            <br />
+            Recursion limit: <input type="number" id="recursion_limit" min="0" value="0" step="1" />
         </div>
 
         <p>Possible Syllables</p>

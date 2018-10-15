@@ -33,9 +33,48 @@ class Helper {
 }
 
 class RandomwordsV3 {
-    constructor(categories, syllables) {
+    constructor(categories, syllables, recursion_limit) {
         this.categories = categories;
         this.syllables = syllables;
+        this.categ_recursion_limit = recursion_limit;
+
+        this.categories = this.resolve_categories();
+    }
+
+    is_category(key) {
+        return this.categories[key] !== undefined;
+    }
+
+    resolve_categories() {
+        let new_categories = {};
+        for (let categ in this.categories) {
+            new_categories[categ] = this.resolve_category(categ);
+        }
+        return new_categories;
+    }
+
+    resolve_category(cat_name, curr_rec_level) {
+        if (curr_rec_level === undefined) {
+            curr_rec_level = 0;
+        }
+        let new_letters = [];
+
+        let letters = this.get_categ(cat_name);
+
+        if (list_eq(letters, [cat_name]) || curr_rec_level >= this.categ_recursion_limit) {
+            return letters;
+        }
+
+        for (let i in letters) {
+            let letter = letters[i];
+            if (this.is_category(letter)) {
+                let cat_letters = this.resolve_category(letter, curr_rec_level + 1);
+                new_letters = new_letters.concat(cat_letters);
+            } else {
+                new_letters.push(letter);
+            }
+        }
+        return new_letters
     }
 
     from_strings(categories_string, category_sep, syllables_string, syllable_sep) {
