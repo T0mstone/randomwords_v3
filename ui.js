@@ -165,6 +165,7 @@ class UIv3 {
         // input_elt.size = "2";
         // input_elt.classList.add('letter');
         let input_elt = this.prot.letter_input();
+        input_elt.value = "";
         div.insertBefore(input_elt, btn);
         return input_elt;
     }
@@ -187,6 +188,7 @@ class UIv3 {
         // input_elt.size = "4";
         // input_elt.classList.add('syllable_cat');
         let input_elt = this.prot.syllable_cat();
+        input_elt.value = "";
         div.insertBefore(input_elt, btn);
         return input_elt;
     }
@@ -213,6 +215,7 @@ class UIv3 {
         // sylcount_elt.step = "1";
         // sylcount_elt.value = "1";
         let sylcount_elt = this.prot.sylcount();
+        sylcount_elt.value = "1";
 
         let br = document.createElement('br');
         let txt = document.createTextNode('or ');
