@@ -5,6 +5,9 @@ function def_prototype() {
         },
         syllable() {
             return document.getElementById('syllable_def_prototype').innerHTML
+        },
+        rewrite_rule() {
+            return document.getElementById('rewrite_rule_prototype').innerHTML
         }
     };
 }
@@ -209,6 +212,17 @@ class UIv3 {
         return sylcount_elt;
     }
 
+    add_rewrite_rule(btn) {
+        let div = btn.parentNode;
+        let categ_elt = document.createElement('div');
+        categ_elt.classList.add('rewrite_rule');
+
+        categ_elt.innerHTML = this.prot.rewrite_rule();
+
+        div.insertBefore(categ_elt, btn);
+        return categ_elt;
+    }
+
     clear_categories() {
         let c = document.getElementById('categories');
         while (document.getElementsByClassName('category_def').length !== 0) {
@@ -230,14 +244,24 @@ class UIv3 {
         }
     }
 
+    clear_rewrite_rules() {
+        let r = document.getElementById('rewrites');
+        while (document.getElementsByClassName('rewrite_rule').length !== 0) {
+            r.removeChild(r.children[0]);
+        }
+    }
+
     clear_all() {
         this.clear_categories();
         this.clear_syllables();
         this.clear_sylcounts();
+        this.clear_rewrite_rules();
 
         this.remove_doubles = false;
         this.amount = 1;
         this.recursion_limit = 0;
+        this.will_gen_all = true;
+        this.timeout = 5;
     }
 
     custom_escape(s) {
@@ -381,6 +405,41 @@ class UIv3 {
         }
     }
 
+    get rewrite_rules() {
+        let sc = document.getElementById('rewrites');
+
+        let rewrite_rules = [];
+        for (let i in sc.children) {
+            let child = sc.children[i];
+            if (child.tagName !== "DIV") {
+                continue;
+            }
+            let pat = child.children[0];
+            let rep = child.children[1];
+            let val = [pat.value, rep.value];
+            if (!list_includes_list(rewrite_rules, val)) {
+                rewrite_rules.push(val);
+            }
+        }
+        return rewrite_rules;
+    }
+
+    set rewrite_rules(rewrite_rules_list) {
+        this.clear_rewrite_rules();
+        let r = document.getElementById('rewrites');
+        let add_button = r.children[0];
+        for (let i in rewrite_rules_list) {
+            let pair = rewrite_rules_list[i];
+            let pat = pair[0];
+            let rep = pair[1];
+            let rew_div = add_button.onclick();
+            let pat_input = rew_div.children[0];
+            let rep_input = rew_div.children[1];
+            pat_input.value = pat;
+            rep_input.value = rep;
+        }
+    }
+
     get timeout() {
         return document.getElementById('timeout').value;
     }
@@ -432,6 +491,7 @@ class UIv3 {
         let amount = this.amount;
         let tmo = this.timeout;
         let rec_l = this.recursion_limit;
+        let wga = this.will_gen_all;
 
 
         let categs = this.categories;
@@ -447,6 +507,15 @@ class UIv3 {
             categ_str += ';' + cat_name + '=' + new_cat_list.join('/');
         }
         categ_str = categ_str.substring(1);
+
+        let rwrules = this.rewrite_rules;
+        let rwrule_str = "";
+        for (let i in rwrules) {
+            let pat = this.custom_escape(rwrules[i][0]);
+            let rep = this.custom_escape(rwrules[i][1]);
+            rwrule_str += ';' + pat + '/' + rep;
+        }
+        rwrule_str = rwrule_str.substring(1);
 
         let syls = this.syllables;
         let syl_str = "";
@@ -465,24 +534,29 @@ class UIv3 {
         let syl_count_str = this.syllable_counts_list.join('/');
 
 
-        let res_list = [categ_str, rec_l, syl_str, remove_doubles, amount, tmo, syl_count_str];
+        let res_list = [categ_str, rec_l, syl_str, rwrule_str, remove_doubles, wga, amount, tmo, syl_count_str];
         return res_list.join('::');
     }
 
     from_string(s) {
         let vals_temp = s.split('::');
-        let categ_str = vals_temp[0];
-        let rec_l = parseInt(vals_temp[1]);
-        let syl_str = vals_temp[2];
-        let remove_doubles = parseInt(vals_temp[3]);
-        let amount = parseInt(vals_temp[4]);
-        let tmo = parseInt(vals_temp[5]);
-        let syl_count_str = vals_temp[6];
+        let pop_s = () => vals_temp.pop();
+        let pop_i = () => parseInt(vals_temp.pop());
+        let syl_count_str = pop_s();
+        let tmo = pop_i();
+        let amount = pop_i();
+        let wga = pop_i();
+        let remove_doubles = pop_i();
+        let rwrule_str = pop_s();
+        let syl_str = pop_s();
+        let rec_l = pop_i();
+        let categ_str = pop_s();
 
         this.remove_doubles = remove_doubles;
         this.amount = amount;
         this.recursion_limit = rec_l;
         this.timeout = tmo;
+        this.will_gen_all = wga;
 
         let categs = {};
         let categ_strs = categ_str.split(';');
@@ -509,6 +583,15 @@ class UIv3 {
             syls.push(syl_items);
         }
         this.syllables = syls;
+
+        let rwrules = [];
+        let rwrule_strs = rwrule_str.split(';');
+        for (let i in rwrule_strs) {
+            let rwrule_s = rwrule_strs[i];
+            let rwrule = rwrule_s.split('/');
+            rwrules.push(rwrule);
+        }
+        this.rewrite_rules = rwrules;
 
         let syl_counts = syl_count_str.split('/');
         this.syllable_counts_list = syl_counts;

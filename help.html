@@ -31,14 +31,18 @@
         <div style="display: inline-block; background-color:rgba(255, 255, 255, 50%)">Possible Syllables:<br />
         V V C<br />
         C V C?</div><br />
-        This will generate syllables with either 2 or 3 letters,<br />
+        This will generate syllables with either 2 or 3 letters (the question mark expands to two structures, one with the C and one without),<br />
         a 2-lettered word will have its first letter randomly chosen from the category C and its second one from V<br />
         a 3-lettered word will either have its letter chosen from V, V and C respectively or from C, V and C respectively.<br />
         (This may be a bit difficult to understand but it was my best attempt to explain it. If you have a better solution, <a href="https://www.reddit.com/message/compose/?to=T0mstone&subject=randomwords%20v3">message me on Reddit</a>)
+        <h3>Rewrite Rules</h3>
+        These Rules are applied after a word is generated (so they even work cross-syllable).<br />
+        The string on the left is replaced by the one on the right, '&gt;' matches the start of a word and '&lt;' the end.<br />
+        These Rules are ignored when calculating the maximum possible number of different words, so you might want to turn off <b>Generate all words when necessary</b> when working with many and/or complex rewrite rules.
         <h3>Other</h3>
         <b>No words twice</b> is self-explanatory.<br />
         <b>Generate all words when necessary</b> will generate a complete list of all possible words when the word amount is greater than or equal to the mathematical maximum possible number of words.<br />
-        &nbsp;&nbsp;&nbsp;&nbsp;It does not take <b>Rewrite Rules</b> into account so you might want to turn it off when using them, but be warned: Turning it off could result in word generation becoming stuck until timeout.<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;It does not take <b>Rewrite Rules</b> into account (when calculating the number) so you might want to turn it off when using them, but be warned: Turning it off could result in word generation becoming stuck until timeout.<br />
         <b>Timeout</b> sets the Time, after which, when the word generator isn't yet finished, it will just abort and give you whatever it's got so far.<br />
         <h3>Syllables per Word</h3>
         This is a list of possible syllables per word, of which one of the numbers is randomly chosen for each word.<br />

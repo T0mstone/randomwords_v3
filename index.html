@@ -26,8 +26,12 @@
 
             let cats = ui.categories;
             let syls = ui.syllables;
+            let rwr = ui.rewrite_rules;
+            let recl = ui.recursion_limit;
+            let wga = ui.will_gen_all;
+
             syls = qm.resolve_every_question_mark_multiple(syls);
-            let rw = new RandomwordsV3(cats, syls, ui.recursion_limit, ui.will_gen_all);
+            let rw = new RandomwordsV3(cats, syls, rwr, recl, wga);
 
             console.log(syls, rw.maximum_possible_different_syllables());
 
@@ -54,7 +58,7 @@
     </script>
 </head>
 
-<body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::10::V/V/C;C/V/C?::1::50::5::2/3')">
+<body onload="ui.from_string('C=b/c/d/k/m;V=a/e/i/o/u::10::V/V/C;C/V/C?::>aa/Ä;ca/sha::1::1::200::5::2/3')">
     <div id="category_def_prototype" style="display: none;">
         <input name="cat" type="string" size="3" />
         =
@@ -67,6 +71,11 @@
         <button onclick="return ui.add_syllable_cat(this);">+</button>
         <button onclick="return ui.enter_remove_mode(this, ui.filters.syllable_cat, 'blinking');">-</button>
         <button onclick="return ui.remove_last(this, ui.filters.syllable_cat);">&lt;-</button>
+    </div>
+    <div id="rewrite_rule_prototype" style="display: none;">
+        <input class="rewrite_key" type="string" size="8" />
+        –>
+        <input class="rewrite_value" type="string" size="8" />
     </div>
     <br />
     <a href="https://github.com/T0mstone/randomwords_v3">Visit me on GitHub</a>
@@ -86,16 +95,21 @@
 
         <p>Possible Syllables</p>
         <div id="syllables">
-            <div class="syllable_def"></div>
             <button onclick="return ui.add_syllable(this);">+</button>
+            <button onclick="return ui.enter_remove_mode(this, ui.filters.div, 'a_blinking');">-</button>
+            <button onclick="return ui.remove_last(this, ui.filters.div);">^</button>
+        </div>
+
+        <p>Rewrite Rules</p>
+        <div id="rewrites">
+            <button onclick="return ui.add_rewrite_rule(this);">+</button>
             <button onclick="return ui.enter_remove_mode(this, ui.filters.div, 'a_blinking');">-</button>
             <button onclick="return ui.remove_last(this, ui.filters.div);">^</button>
         </div>
 
         <p>Other</p>
         <input type="checkbox" id="rem_dbls" /> No words twice<br />
-        <!--  TODO: change the title here into a help page, make the help page-->
-        <div title="This will generate a complete list of all possible words when the word amount is greater than or equal to the maximum possible number of words. This does not take rewrite rules into account so you might want to turn this off when using them"><input type="checkbox" id="will_gen_all" /> Generate all words when necessary<sup>*</sup><br /></div>
+        <input type="checkbox" id="will_gen_all" /> Generate all words when necessary<sup>*</sup><br />
         Generate <input type="number" id="amount" min="1" step="1" value="1" /> words. <br />
         Timeout after <input type="number" id="timeout" min="1" step="0.25" value="5" /> seconds.<br />
         Syllables per word:
