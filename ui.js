@@ -8,6 +8,15 @@ function def_prototype() {
         },
         rewrite_rule() {
             return document.getElementById('rewrite_rule_prototype').innerHTML
+        },
+        letter_input() {
+            return document.getElementById('other_prototypes').children[0].cloneNode(true);
+        },
+        syllable_cat() {
+            return document.getElementById('other_prototypes').children[1].cloneNode(true);
+        },
+        sylcount() {
+            return document.getElementById('other_prototypes').children[2].cloneNode(true);
         }
     };
 }
@@ -151,10 +160,11 @@ class UIv3 {
 
     add_letter_input(btn) {
         let div = btn.parentNode;
-        let input_elt = document.createElement('input');
-        input_elt.type = "string";
-        input_elt.size = "2";
-        input_elt.classList.add('letter');
+        // let input_elt = document.createElement('input');
+        // input_elt.type = "string";
+        // input_elt.size = "2";
+        // input_elt.classList.add('letter');
+        let input_elt = this.prot.letter_input();
         div.insertBefore(input_elt, btn);
         return input_elt;
     }
@@ -172,10 +182,11 @@ class UIv3 {
 
     add_syllable_cat(btn) {
         let div = btn.parentNode;
-        let input_elt = document.createElement('input');
-        input_elt.type = "string";
-        input_elt.size = "4";
-        input_elt.classList.add('syllable_cat');
+        // let input_elt = document.createElement('input');
+        // input_elt.type = "string";
+        // input_elt.size = "4";
+        // input_elt.classList.add('syllable_cat');
+        let input_elt = this.prot.syllable_cat();
         div.insertBefore(input_elt, btn);
         return input_elt;
     }
@@ -194,13 +205,14 @@ class UIv3 {
     add_sylcount(btn) {
         let div = btn.parentNode;
 
-        let sylcount_elt = document.createElement('input');
-        sylcount_elt.type = "number";
-        sylcount_elt.size = "4";
-        sylcount_elt.classList.add('sylcount');
-        sylcount_elt.min = "1";
-        sylcount_elt.step = "1";
-        sylcount_elt.value = "1";
+        // let sylcount_elt = document.createElement('input');
+        // sylcount_elt.type = "number";
+        // sylcount_elt.size = "4";
+        // sylcount_elt.classList.add('sylcount');
+        // sylcount_elt.min = "1";
+        // sylcount_elt.step = "1";
+        // sylcount_elt.value = "1";
+        let sylcount_elt = this.prot.sylcount();
 
         let br = document.createElement('br');
         let txt = document.createTextNode('or ');
