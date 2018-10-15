@@ -33,10 +33,12 @@ class Helper {
 }
 
 class RandomwordsV3 {
-    constructor(categories, syllables, recursion_limit) {
+    constructor(categories, syllables, rewrite_rules, recursion_limit, will_gen_all) {
         this.categories = categories;
         this.syllables = syllables;
+        this.rewrite_rules = rewrite_rules;
         this.categ_recursion_limit = recursion_limit;
+        this.will_gen_all = will_gen_all;
 
         this.categories = this.resolve_categories();
     }
@@ -154,7 +156,18 @@ class RandomwordsV3 {
         for (let i = 0; i < syllable_count; i++) {
             res += this.gen_random_syllable();
         }
-        return res;
+        return this.rewrite_word(res);
+    }
+
+    rewrite_word(word) {
+        for (let i in this.rewrite_rules) {
+            let pat = this.rewrite_rules[i][0]
+            let rep = this.rewrite_rules[i][1];
+            word = ">" + word + "<";
+            word = word.replace(pat, rep);
+            word = word.replace(/^>|<$/g, '');
+        }
+        return word;
     }
 
     all_possible_words_sylcount(syllable_count) {
@@ -217,7 +230,7 @@ class RandomwordsV3 {
     gen_words_without_doubles(amount, syllable_counts_list, timeout_secs) {
         console.log("generating", amount, "words (without doubles)...");
         let max_amount = this.maximum_possible_words(syllable_counts_list);
-        if (amount >= max_amount) {
+        if (amount >= max_amount && this.will_gen_all) {
             console.log("amount (" + amount + ") equals or exceeds the maximum possible words (" + max_amount + "), generating all possible words...");
             return this.gen_all_words(syllable_counts_list);
         }

@@ -17,7 +17,7 @@ body {
     margin-right: 10px;
 }
 
-.syllable_def, .category_def {
+.syllable_def, .category_def, .rewrite_rule {
     margin-bottom: 3px;
 }
 

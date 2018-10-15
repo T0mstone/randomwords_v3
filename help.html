@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Randomwords v3 Help</title>
+    </head>
+    <body>
+        <u><h2>Help for the Randomwords v3 Settings</h2></u>
+        <h3>Lists</h3>
+        You encounter Lists when working with Categories, Syllables and Syllables per word. <br />
+        The [+] Button adds a new element to the List,<br />
+        the [-] Button enters Delete Mode and<br />
+        the [&lt;-] or [^] Button removes the last element from the List.
+        <h3>Delete Mode</h3>
+        In Delete Mode, the Items you can delete start blinking in red.<br />
+        You can click on one of them, which deletes it and exits Delete Mode.<br />
+        You can also press the [x] Button, which exits Delete Mode without deleting anything.
+        <h3>Categories</h3>
+        A Category consists of:<br />
+        - a name (anything you want), which can be as long as you want (although only 3 characters are displayed at a time), that is displayed in front of the = sign,<br />
+        - a list of items, which represent all the possible letters for that category<br />
+        You can also add the names of other Categories as letters, which can be resolved (see <b>Recursion Limit</b>)
+        <h3>Recursion Limit</h3>
+        The Recursion Limit is the number of times the Generator will substitute the contents of a category for that category's letter inside a letter list before halting and just inserting the raw name of that category instead.<br />
+        (This may be a bit difficult to understand but it was my best attempt to explain it. If you have a better solution, <a href="https://www.reddit.com/message/compose/?to=T0mstone&subject=randomwords%20v3">message me on Reddit</a>)
+        <h3>Possible Syllables</h3>
+        This is a list of lists,
+        each item is a list of categories which will be used to generate a word.<br />
+        example:<br />
+        <div style="display: inline-block; background-color:rgba(255, 255, 255, 50%)">Possible Syllables:<br />
+        V V C<br />
+        C V C?</div><br />
+        This will generate syllables with either 2 or 3 letters (the question mark expands to two structures, one with the C and one without),<br />
+        a 2-lettered word will have its first letter randomly chosen from the category C and its second one from V<br />
+        a 3-lettered word will either have its letter chosen from V, V and C respectively or from C, V and C respectively.<br />
+        (This may be a bit difficult to understand but it was my best attempt to explain it. If you have a better solution, <a href="https://www.reddit.com/message/compose/?to=T0mstone&subject=randomwords%20v3">message me on Reddit</a>)
+        <h3>Rewrite Rules</h3>
+        These Rules are applied after a word is generated (so they even work cross-syllable).<br />
+        The string on the left is replaced by the one on the right, '&gt;' matches the start of a word and '&lt;' the end.<br />
+        These Rules are ignored when calculating the maximum possible number of different words, so you might want to turn off <b>Generate all words when necessary</b> when working with many and/or complex rewrite rules.
+        <h3>Other</h3>
+        <b>No words twice</b> is self-explanatory.<br />
+        <b>Generate all words when necessary</b> will generate a complete list of all possible words when the word amount is greater than or equal to the mathematical maximum possible number of words.<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;It does not take <b>Rewrite Rules</b> into account (when calculating the number) so you might want to turn it off when using them, but be warned: Turning it off could result in word generation becoming stuck until timeout.<br />
+        <b>Timeout</b> sets the Time, after which, when the word generator isn't yet finished, it will just abort and give you whatever it's got so far.<br />
+        <h3>Syllables per Word</h3>
+        This is a list of possible syllables per word, of which one of the numbers is randomly chosen for each word.<br />
+        example:<br />
+        <div style="display: inline-block; background-color:rgba(255, 255, 255, 50%)">Syllables per word:<br />
+        2<br />
+        or 3</div><br />
+        Terefore, all words would have either 2 or 3 syllables.<br />
+        Duplicate numbers are automatically removed.
+    </body>
+</html>
