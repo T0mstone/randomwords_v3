@@ -77,11 +77,19 @@
         –>
         <input class="rewrite_value" type="string" size="8" />
     </div>
-    <br />
-    <a href="https://github.com/T0mstone/randomwords_v3">Visit me on GitHub</a>
-    <br /><br />
-    <a href="help.html">Help</a>
-    <br /><br />
+    <div id="links">
+        <br />
+        <a href="https://github.com/T0mstone/randomwords_v3">Visit me on GitHub</a>
+        <br /><br />
+        <a href="help.html">Help</a>
+        <br /><br />
+        <button onclick="ui.hide_links();">Collapse Links</button>
+        <br /><br />
+    </div>
+    <div id="expand_links" style="display: none;">
+        ...<br />
+        <button onclick="ui.show_links();">Expand Links</button>
+    </div>
     <div width="100%" class="InputBox">
         <p>Categories</p>
         <div id="categories">

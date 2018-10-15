@@ -81,6 +81,16 @@ class UIv3 {
         this.f_onclick_on_sylcount = (curr) => curr.children[0];
     }
 
+    hide_links() {
+        document.getElementById('links').style.display = "none";
+        document.getElementById('expand_links').style.display = "inherit";
+    }
+
+    show_links() {
+        document.getElementById('links').style.display = "inherit";
+        document.getElementById('expand_links').style.display = "none";
+    }
+
     enter_remove_mode(btn, filter_f, anim_class, f_onclick_on_what) {
         let par = btn.parentNode;
         let all = filter_list(par.children, filter_f);
