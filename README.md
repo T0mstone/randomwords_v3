@@ -1,7 +1,7 @@
 # randomwords_v3
 generates words from patterns
 
-This is comblete but lacks some features
+This is complete but lacks some features
 
 # Planned features
 Help / Tutorial
